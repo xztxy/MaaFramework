@@ -24,6 +24,9 @@
             "sample/python/demo3_agent.py" // 子进程参数。支持相对路径（相对于interface.json所在目录）
         ]
     },
+    "global_option": [ // 全局选项配置，参与所有任务的 pipeline override，不依赖资源包或控制器的选择
+        "语言设置"
+    ],
     "controller": [
         {
             "name": "Android",
@@ -33,7 +36,10 @@
             "type": "Adb",
             "display_short_side": 720, // 默认缩放分辨率的短边长度，用于屏幕适配。与long_side二选一
             // "display_long_side": 1080, // 默认缩放分辨率的长边长度，与short_side二选一
-            "display_raw": false // 是否使用原始分辨率进行截图，与缩放分辨率设置互斥
+            "display_raw": false, // 是否使用原始分辨率进行截图，与缩放分辨率设置互斥
+            "option": [ // 控制器级选项配置，参与所有使用该控制器的任务的 pipeline override
+                "ADB额外设置"
+            ]
         },
         {
             "name": "Windows",
@@ -336,6 +342,96 @@
                     "pipeline_override": {
                         "AfterFarming": {
                             "next": "ExitGame"
+                        }
+                    }
+                }
+            ]
+        },
+        "启用功能": {
+            "type": "checkbox", // checkbox类型，多选框，用户可同时选中多个选项
+            "label": "$启用功能",
+            "description": "选择要启用的功能模块，可多选",
+            "default_cases": ["自动战斗", "自动拾取"], // 默认选中的选项列表
+            "cases": [
+                {
+                    "name": "自动战斗",
+                    "label": "$自动战斗",
+                    "description": "启用自动战斗功能",
+                    "pipeline_override": {
+                        "AutoBattle": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "自动拾取",
+                    "label": "$自动拾取",
+                    "description": "启用自动拾取功能",
+                    "pipeline_override": {
+                        "AutoLoot": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "自动回血",
+                    "label": "$自动回血",
+                    "description": "启用自动回血功能",
+                    "pipeline_override": {
+                        "AutoHeal": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "ADB额外设置": {
+            "type": "switch", // 仅在选择了 Android 控制器时可见的选项
+            "label": "$ADB额外设置",
+            "description": "是否启用 ADB 额外设置",
+            "controller": ["Android"], // 指定该配置项仅适用于 Android 控制器
+            "cases": [
+                {
+                    "name": "Yes",
+                    "label": "$启用",
+                    "pipeline_override": {
+                        "ADBExtraSettings": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "label": "$禁用",
+                    "pipeline_override": {
+                        "ADBExtraSettings": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "语言设置": {
+            "type": "select", // 全局选项示例，通过顶层 global_option 引用
+            "label": "$语言设置",
+            "description": "设置游戏语言",
+            "default_case": "简体中文",
+            "cases": [
+                {
+                    "name": "简体中文",
+                    "label": "$简体中文",
+                    "pipeline_override": {
+                        "LanguageSetting": {
+                            "expected": "zh_cn"
+                        }
+                    }
+                },
+                {
+                    "name": "English",
+                    "label": "$English",
+                    "pipeline_override": {
+                        "LanguageSetting": {
+                            "expected": "en_us"
                         }
                     }
                 }

@@ -119,6 +119,14 @@
                             "const": "input",
                             "description": "用户输入框，允许用户手动输入内容"
                         },
+                        "controller": {
+                            "type": "array",
+                            "title": "适用的控制器",
+                            "description": "指定该配置项适用的控制器类型列表。数组元素应与 controller 配置中的 name 字段对应。若不指定，则表示在所有控制器类型中都可用",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
                         "label": {
                             "$ref": "#/definitions/i18nString",
                             "title": "显示标签",
@@ -162,6 +170,14 @@
                             "const": "select",
                             "description": "下拉选项框，用户从预定义的选项中选择"
                         },
+                        "controller": {
+                            "type": "array",
+                            "title": "适用的控制器",
+                            "description": "指定该配置项适用的控制器类型列表。数组元素应与 controller 配置中的 name 字段对应。若不指定，则表示在所有控制器类型中都可用",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
                         "label": {
                             "$ref": "#/definitions/i18nString",
                             "title": "显示标签",
@@ -196,12 +212,74 @@
                     "additionalProperties": false
                 },
                 {
+                    "title": "checkboxOption",
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "const": "checkbox",
+                            "description": "多选框，用户从预定义的选项中选择多个"
+                        },
+                        "controller": {
+                            "type": "array",
+                            "title": "适用的控制器",
+                            "description": "指定该配置项适用的控制器类型列表。数组元素应与 controller 配置中的 name 字段对应。若不指定，则表示在所有控制器类型中都可用",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "label": {
+                            "$ref": "#/definitions/i18nString",
+                            "title": "显示标签",
+                            "description": "用于在用户界面中展示，支持国际化"
+                        },
+                        "description": {
+                            "$ref": "#/definitions/i18nString",
+                            "title": "详细描述",
+                            "description": "帮助用户理解配置项的作用。支持文件路径、URL 或直接文本，内容支持 Markdown 格式"
+                        },
+                        "icon": {
+                            "$ref": "#/definitions/i18nString",
+                            "title": "图标路径",
+                            "description": "配置项图标文件路径，相对于项目根目录"
+                        },
+                        "cases": {
+                            "type": "array",
+                            "title": "可选项列表",
+                            "description": "用户可同时选中多个 case，所有被选中的 case 的 pipeline_override 会依次合并生效",
+                            "items": {
+                                "$ref": "#/definitions/caseItem"
+                            }
+                        },
+                        "default_cases": {
+                            "type": "array",
+                            "title": "默认选中的选项列表",
+                            "description": "默认选中的选项名称列表",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "cases"
+                    ],
+                    "additionalProperties": false
+                },
+                {
                     "title": "switchOption",
                     "type": "object",
                     "properties": {
                         "type": {
                             "const": "switch",
                             "description": "选择框，Yes or No"
+                        },
+                        "controller": {
+                            "type": "array",
+                            "title": "适用的控制器",
+                            "description": "指定该配置项适用的控制器类型列表。数组元素应与 controller 配置中的 name 字段对应。若不指定，则表示在所有控制器类型中都可用",
+                            "items": {
+                                "type": "string"
+                            }
                         },
                         "label": {
                             "$ref": "#/definitions/i18nString",
@@ -302,6 +380,14 @@
                     "type": "array",
                     "title": "附加资源路径",
                     "description": "可选。附加资源路径数组。将会在 resource.path 加载完成后，额外加载这些路径下的资源",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "option": {
+                    "type": "array",
+                    "title": "控制器级选项配置",
+                    "description": "可选。控制器级的选项配置，为一个字符串数组，数组元素应与外层 option 配置中的键名对应。该选项生成的参数会参与到所有使用该控制器的任务的 pipeline override 中",
                     "items": {
                         "type": "string"
                     }
@@ -753,6 +839,14 @@
             "description": "为一个对象映射，包含配置项的信息",
             "additionalProperties": {
                 "$ref": "#/definitions/optionDefinition"
+            }
+        },
+        "global_option": {
+            "type": "array",
+            "title": "全局选项配置",
+            "description": "可选。全局选项配置，为一个字符串数组，数组元素应与 option 配置中的键名对应。该选项生成的参数会参与到所有任务的 pipeline override 中，不依赖于资源包或控制器的选择",
+            "items": {
+                "type": "string"
             }
         },
         "import": {
